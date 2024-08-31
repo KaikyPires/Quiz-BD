@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização de Consultas SQL</title>
+    <link rel="stylesheet" href="../static/css/table.css">
+
+    <script src="../static/js/loading.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        select, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); 
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            color: #ddd;
+        }
+        th {
+            background-color: #F2BB13;
+        }
+        caption {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+        tr:hover {
+            background-color: #5A5A5A; /* Cor de fundo quando o mouse passa sobre a linha */
+        }
+        /* Efeito de hover para células da tabela */
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <div id="menu-bar" onclick="menuOnClick()">
+            <div id="bar1" class="bar"></div>
+            <div id="bar2" class="bar"></div>
+            <div id="bar3" class="bar"></div>
+        </div>
+        <nav class="nav" id="nav">
+            <ul>
+                <li><a href="escolha.html">Home</a></li>
+                <li><a href="table.html">Tabela</a></li>
+                <li><a href="#">Sair</a></li>
+            </ul>
+        </nav> 
+    </div>
+
+    <div class="container">
+        <h1>Consultas SQL</h1>
+        
+        <select id="consultaSelect">
+            <option value="">Selecione uma consulta</option>
+            <option value="pontuacao-acima">Jogadores com Pontuação Acima</option>
+            <option value="contagem-perguntas">Contagem de Perguntas por Categoria</option>
+            <option value="jogadores-quizzes">Jogadores e Quizzes</option>
+            <option value="perguntas-respostas">Perguntas e Respostas</option>
+            <option value="pontuacao-maxima-minima">Pontuação Máxima e Mínima</option> <!-- Aqui -->
+            <option value="quizzes-perguntas-respostas-corr">Quizzes, Perguntas e Respostas Corretas</option>
+            <option value="total-quizzes-jogados">Total de Quizzes Jogados por Jogador</option>
+            <option value="pontuacao-media">Pontuação Média por Quiz</option>
+            <option value="datas-quiz">Datas do Primeiro e Último Quiz Jogados</option>
+        </select>
+        
+        <button id="mostrarBtn" onclick="mostrarTabela()">Mostrar Tabela</button>
+
+        <div id="resultados"></div>
+    </div>
+
+    <script>
+        function mostrarTabela() {
+            const consulta = document.getElementById('consultaSelect').value;
+            const mostrarBtn = document.getElementById('mostrarBtn');
+            const resultadosDiv = document.getElementById('resultados');
+
+            if (!consulta) {
+                alert('Por favor, selecione uma consulta.');
+                return;
+            }
+            
+            mostrarBtn.disabled = true; // Desabilita o botão enquanto carrega
+            resultadosDiv.innerHTML = '<p>Carregando...</p>'; // Mostra um texto de carregamento
+
+            fetch(`http://localhost:8080/api/consultas/${consulta}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultadosDiv.innerHTML = ''; // Limpa o texto de carregamento
+
+                    if (data.length === 0) {
+                        resultadosDiv.innerHTML = '<p>Nenhum dado encontrado.</p>';
+                        return;
+                    }
+
+                    let tableHTML = '<table><caption>Resultados da Consulta</caption><thead><tr>';
+                    
+                    // Adiciona cabeçalhos à tabela
+                    Object.keys(data[0]).forEach(key => {
+                        tableHTML += `<th>${key}</th>`;
+                    });
+                    tableHTML += '</tr></thead><tbody>';
+
+                    // Adiciona os dados à tabela
+                    data.forEach(row => {
+                        tableHTML += '<tr>';
+                        Object.values(row).forEach(value => {
+                            tableHTML += `<td>${value}</td>`;
+                        });
+                        tableHTML += '</tr>';
+                    });
+                    tableHTML += '</tbody></table>';
+
+                    resultadosDiv.innerHTML = tableHTML;
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    resultadosDiv.innerHTML = '<p>Erro ao carregar dados. Por favor, tente novamente.</p>';
+                })
+                .finally(() => {
+                    mostrarBtn.disabled = false; // Reabilita o botão após o carregamento
+                });
+        }
+
+        function menuOnClick() {
+            document.getElementById("menu-bar").classList.toggle("change");
+            document.getElementById("nav").classList.toggle("change");
+            document.getElementById("menu-bg").classList.toggle("change-bg");
+        }
+    </script>
+    
+</body>
+</html>

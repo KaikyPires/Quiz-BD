@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Press Start 2P", cursive;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(68,47,115,1) 50%, rgba(0,0,0,1) 100%);
+  
+}
+
+body h2 {
+  color: white;
+  text-shadow: 4px 4px 0px #000000;
+}
+
+main {
+    background-color: white;
+    padding: 20px; /* Aumenta o padding interno para melhorar o espaçamento */
+    border-radius: 10px;
+    width: 800px;
+    max-height: 500px; /* Define um máximo de altura */
+     /* Adiciona rolagem vertical se o conteúdo exceder a altura máxima */
+    display: flex;
+    flex-direction: column; /* Organiza o conteúdo verticalmente */
+    gap: 20px; /* Espaçamento entre os elementos */
+    overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+  padding-top: 1px;
+}
+
+.spnQtd {
+  text-align: end;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+button {
+  width: 100%;
+  min-height: 40px;
+  text-align: start;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #F2BB13;
+  color: white;
+  transition: background-color 0.3s ease; /* Transição suave para a mudança de cor */
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #E0A70F; 
+  color: #fffbe6; 
+  transform: scale(1.02);
+}
+
+.finish {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.finish button {
+  text-align: center;
+}
+:root {
+    --ghost-1: #d0abb8;
+    --ghost-2: #dda445;
+    --ghost-3: #99cfd4;
+    --ghost-4: #e0161a;
+    --eye-color: #353be0;
+    --ghost-variant: var(--ghost-1);
+    --ghost-eye-size: 0.5;
+    --ghost-eye-color: transparent;
+    --ghost-chomp-color: white;
+  }
+
+ 
+  .ghosts {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  ghost {
+    --ghost-eye-size: 1;
+    --ghost-chomp-color: transparent;
+    display: grid;
+    background: radial-gradient(
+        calc(0.45rem * var(--ghost-eye-size))
+          calc(0.45rem * var(--ghost-eye-size)) at 0.85rem 1rem,
+        var(--eye-color, var(--ghost-variant)) 50%,
+        transparent 50%,
+        transparent
+      ),
+      radial-gradient(
+        calc(0.45rem * var(--ghost-eye-size))
+          calc(0.45rem * var(--ghost-eye-size)) at 1.75rem 1rem,
+        var(--eye-color, var(--ghost-variant)) 50%,
+        transparent 50%,
+        transparent
+      ),
+      radial-gradient(
+        calc(0.6rem * var(--ghost-eye-size)) calc(0.75rem * var(--ghost-eye-size))
+          at 0.75rem 1rem,
+        white 50%,
+        transparent 50%,
+        transparent
+      ),
+      radial-gradient(
+        calc(0.6rem * var(--ghost-eye-size)) calc(0.75rem * var(--ghost-eye-size))
+          at 1.6rem 1rem,
+        white 50%,
+        transparent 50%,
+        transparent
+      ),
+      var(--ghost-variant); /* Utilizando a variável para cor do fantasma */
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    position: relative;
+    width: 2rem;
+    height: 2.4rem;
+    animation: ghost-body 0.3s ease infinite, ghost-move 13s linear infinite;
+  }
+
+  ghost.pinky { --ghost-variant: var(--ghost-1); }
+  ghost.clyde { --ghost-variant: var(--ghost-2); }
+  ghost.inky { --ghost-variant: var(--ghost-3); }
+  ghost.blinky { --ghost-variant: var(--ghost-4); }
+  ghost.dizzied { --ghost-variant: #4a46ba; }
+
+  @keyframes ghost-body {
+    from {
+      clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 99% 100%, 77% 86%, 58% 100%, 42% 84%, 27% 100%, 15% 84%);
+    }
+    50% {
+      clip-path: polygon(0% 75.25%, 0% 0%, 100% 0%, 100% 75.25%, 90.56% 90.56%, 83.3% 100%, 75.44% 90.56%, 65.96% 73.58%, 56.49% 90.56%, 49.96% 100%, 42.25% 91.5%, 31.23% 73.58%, 21.24% 92.09%, 14.98% 100%, 8.5% 91.5%);
+    }
+    to {
+      clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%, 90.56% 90.56%, 82.44% 73.62%, 75.44% 90.56%, 65.13% 100%, 56.49% 90.56%, 47.44% 73.62%, 42.25% 91.5%, 31.22% 100%, 21.24% 92.09%, 15% 73.62%, 8.5% 91.5%);
+    }
+  }
+
+  @keyframes ghost-move {
+    from { transform: translateX(-60rem); } /* Aumentado para -60rem */
+    49.99% { transform: translateX(60rem); } /* Aumentado para 50rem */
+    50% { transform: translateX(40rem) scaleX(-1); } /* Aumentado para 40rem */
+    60% { transform: translateX(15rem) scaleX(-1); } /* Aumentado para 15rem */
+    to { transform: translateX(-45rem) scaleX(-1); } /* Aumentado para -55rem */
+  }
+  

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Press+Start+2P&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" href="../static/images/arcade.png">
+    <title>Quiz - Iniciar</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <div id="contenitore">
+        <div class="left">
+        
+        <table>
+        <caption>Date table</caption>
+        <tbody>
+        <tr><td>A</td><td>20%</td><td style="background-color:#336699">&nbsp;</td></tr>
+        <tr><td>B</td><td>68%</td><td style="background-color:#003366">&nbsp;</td></tr>
+        <tr><td>C</td><td>30%</td><td style="background-color:#ff6600">&nbsp;</td></tr>
+        <tr><td>D</td><td>20%</td><td style="background-color:#ffcc00">&nbsp;</td></tr>
+        </tbody></table>
+        <div class="button" onclick="viewGraph()">Rerun</div>
+        </div>
+        <div class="left">
+        <div id="grafico">
+        <div class="riga" style="top:25%"><div>75%</div></div>
+        <div class="riga" style="top:50%"><div>50%</div></div>
+        <div class="riga" style="top:75%"><div>25%</div></div>
+        <div id="col0" style="left:0; background-color:#336699;" class="column"></div>
+        <div id="col1" style="left:25%; background-color:#003366;" class="column"></div>
+        <div id="col2" style="left:50%; background-color:#ff6600;" class="column"></div>
+        <div id="col3" style="left:75%; background-color:#ffcc00;" class="column"></div>
+        </div>
+        </div>
+        <div class="canc"></div>
+        <div style="margin: 20px auto; text-align:center;">quellidelcucuzzolo.blogspot.com</div>
+        </div>
+   
+          <script>function viewGraph(){
+            $('.column').css('height','0');
+            $('table tr').each(function(index) {
+            var ha = $(this).children('td').eq(1).text();
+            $('#col'+index).animate({height: ha}, 1500).html("<div>"+ha+"</div>");
+            });
+            }
+            $(document).ready(function(){
+            viewGraph();
+            });</script>
+ 
+    <script src="../static/js/loading.js"></script>
+</body>
+</html>

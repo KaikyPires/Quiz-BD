@@ -1,0 +1,85 @@
+package quiz.demo.controller;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@RestController
+@RequestMapping("/api/consultas")
+public class ConsultaController {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @GetMapping("/{consulta}")
+    public ResponseEntity<List<Map<String, Object>>> getConsulta(@PathVariable String consulta) {
+        String sql = "";
+        switch (consulta) {
+            case "pontuacao-acima":
+                sql = "SELECT Nome, Pontuacao_Total FROM Jogador WHERE Pontuacao_Total > 25 ORDER BY Pontuacao_Total DESC";
+                break;
+            case "contagem-perguntas":
+                sql = "SELECT Categoria, COUNT(*) AS Total_Perguntas FROM Pergunta GROUP BY Categoria ORDER BY Total_Perguntas DESC";
+                break;
+            case "jogadores-quizzes":
+                sql = "SELECT Jogador.Nome, Quiz.Nome AS Quiz_Nome, Quiz_Jogado.Data " +
+                      "FROM Jogador " +
+                      "INNER JOIN Quiz_Jogado ON Jogador.ID = Quiz_Jogado.Jogador_ID " +
+                      "INNER JOIN Quiz ON Quiz_Jogado.Quiz_ID = Quiz.ID";
+                break;
+            case "perguntas-respostas":
+                sql = "SELECT Pergunta.Texto AS Pergunta, Resposta.Texto AS Resposta, Resposta.Correta " +
+                      "FROM Pergunta " +
+                      "INNER JOIN Resposta ON Pergunta.ID = Resposta.Pergunta_ID";
+                break;
+            case "jogadores-quizzes-perguntas":
+                sql = "SELECT Jogador.Nome AS Jogador, Quiz.Nome AS Quiz, Pergunta.Texto AS Pergunta " +
+                      "FROM Jogador " +
+                      "INNER JOIN Quiz_Jogado ON Jogador.ID = Quiz_Jogado.Jogador_ID " +
+                      "INNER JOIN Quiz ON Quiz_Jogado.Quiz_ID = Quiz.ID " +
+                      "INNER JOIN Quiz_Pergunta ON Quiz.ID = Quiz_Pergunta.Quiz_ID " +
+                      "INNER JOIN Pergunta ON Quiz_Pergunta.Pergunta_ID = Pergunta.ID";
+                break;
+            case "quizzes-perguntas-respostas-corr":
+                sql = "SELECT Quiz.Nome AS Quiz, Pergunta.Texto AS Pergunta, Resposta.Texto AS Resposta " +
+                      "FROM Quiz " +
+                      "INNER JOIN Quiz_Pergunta ON Quiz.ID = Quiz_Pergunta.Quiz_ID " +
+                      "INNER JOIN Pergunta ON Quiz_Pergunta.Pergunta_ID = Pergunta.ID " +
+                      "INNER JOIN Resposta ON Pergunta.ID = Resposta.Pergunta_ID " +
+                      "WHERE Resposta.Correta = TRUE";
+                break;
+            case "total-quizzes-jogados":
+                sql = "SELECT Jogador.Nome, COUNT(Quiz_Jogado.Quiz_ID) AS Total_Quizzes_Jogados " +
+                      "FROM Jogador " +
+                      "INNER JOIN Quiz_Jogado ON Jogador.ID = Quiz_Jogado.Jogador_ID " +
+                      "GROUP BY Jogador.Nome";
+                break;
+            case "pontuacao-media":
+                sql = "SELECT Quiz.Nome, AVG(Quiz_Jogado.Pontuacao) AS Pontuacao_Media " +
+                      "FROM Quiz " +
+                      "INNER JOIN Quiz_Jogado ON Quiz.ID = Quiz_Jogado.Quiz_ID " +
+                      "GROUP BY Quiz.Nome";
+                break;
+            case "datas-quiz":
+                sql = "SELECT Jogador.Nome AS Nome_Jogador, MIN(Quiz_Jogado.Data) AS Data_Primeiro_Quiz, " +
+                      "MAX(Quiz_Jogado.Data) AS Data_Ultimo_Quiz, " +
+                      "DATEDIFF(MAX(Quiz_Jogado.Data), MIN(Quiz_Jogado.Data)) AS Dias_Entre_Quizzes " +
+                      "FROM Jogador " +
+                      "INNER JOIN Quiz_Jogado ON Jogador.ID = Quiz_Jogado.Jogador_ID " +
+                      "GROUP BY Jogador.Nome";
+                break;
+            default:
+                return ResponseEntity.badRequest().body(new ArrayList<>());
+        }
+        List<Map<String, Object>> resultados = jdbcTemplate.queryForList(sql);
+        return ResponseEntity.ok(resultados);
+    }
+}
