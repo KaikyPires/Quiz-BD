@@ -20,7 +20,7 @@
         <tr><td>A</td><td>20%</td><td style="background-color:#336699">&nbsp;</td></tr>
         <tr><td>B</td><td>68%</td><td style="background-color:#003366">&nbsp;</td></tr>
         <tr><td>C</td><td>30%</td><td style="background-color:#ff6600">&nbsp;</td></tr>
-        <tr><td>D</td><td>20%</td><td style="background-color:#ffcc00">&nbsp;</td></tr>
+        <tr><td>D</td><td>90%</td><td style="background-color:#ffcc00">&nbsp;</td></tr>
         </tbody></table>
         <div class="button" onclick="viewGraph()">Rerun</div>
         </div>
@@ -36,10 +36,10 @@
         </div>
         </div>
         <div class="canc"></div>
-        <div style="margin: 20px auto; text-align:center;">quellidelcucuzzolo.blogspot.com</div>
         </div>
    
-          <script>function viewGraph(){
+          <script>
+          function viewGraph(){
             $('.column').css('height','0');
             $('table tr').each(function(index) {
             var ha = $(this).children('td').eq(1).text();

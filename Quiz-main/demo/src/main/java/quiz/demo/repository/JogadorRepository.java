@@ -10,9 +10,14 @@ import quiz.demo.model.Jogador;
 public interface JogadorRepository extends JpaRepository<Jogador, Long> {
  
   
-    // Seleção de jogadores com pontuação total acima de um certo valor
-    @Query("SELECT j.nome, j.pontuacaoTotal FROM Jogador j WHERE j.pontuacaoTotal > :pontuacao ORDER BY j.pontuacaoTotal DESC")
-    List<Object[]> findJogadoresComPontuacaoAcima(double pontuacao);
+    @Query("SELECT AVG(j.pontuacaoTotal) FROM Jogador j")
+    double findMediaPontuacaoTotal();
+
+    @Query("SELECT j.nome, j.pontuacaoTotal " +
+           "FROM Jogador j " +
+           "WHERE j.pontuacaoTotal > (SELECT AVG(j2.pontuacaoTotal) FROM Jogador j2) " +
+           "ORDER BY j.pontuacaoTotal DESC")
+    List<Object[]> findJogadoresAcimaDaMedia();
 
     // Contagem de perguntas por categoria
     @Query("SELECT p.categoria, COUNT(p) FROM Pergunta p GROUP BY p.categoria ORDER BY COUNT(p) DESC")
@@ -79,4 +84,6 @@ List<Object[]> findPontuacaoMediaPorQuiz();
        ") " +
        "ORDER BY qj.pontuacao DESC")
 List<Object[]> findPontuacaoMaximaEMinimaPorQuiz();
+
+
 }

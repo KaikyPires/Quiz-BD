@@ -22,15 +22,53 @@ btnRestart.onclick = () => {
 
 btnSave.onclick = () => {
   const nome = prompt("Digite seu nome:");
-  
   if (nome) {
-    // Redirecionar para a página de confirmação com os parâmetros
-    const queryParams = new URLSearchParams({
-      correct: questionsCorrect,
-      name: nome
-    }).toString();
+    fetch('http://localhost:8080/api/jogadores')
+      .then(response => response.json())
+      .then(jogadores => {
+        const jogadorExistente = jogadores.find(j => j.nome === nome);
 
-    window.location.href = `confirm.html?${queryParams}`;
+        if (jogadorExistente) {
+          // Atualizar a pontuação do jogador existente
+          const updatedScore = jogadorExistente.pontuacaoTotal + questionsCorrect;
+
+          fetch(`http://localhost:8080/api/jogadores/${jogadorExistente.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ...jogadorExistente,
+              pontuacaoTotal: updatedScore
+            })
+          })
+          .then(response => response.json())
+          .then(updatedJogador => {
+            console.log('Pontuação atualizada com sucesso:', updatedJogador);
+            window.location.href = 'index.html'; // Redirecionar para a página inicial
+          })
+          .catch(error => console.error('Erro ao atualizar a pontuação:', error));
+        } else {
+          // Criar um novo jogador com a pontuação
+          fetch('http://localhost:8080/api/jogadores', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              nome: nome,
+              pontuacaoTotal: questionsCorrect
+            })
+          })
+          .then(response => response.json())
+          .then(newJogador => {
+            console.log('Novo jogador criado com sucesso:', newJogador);
+            window.location.href = 'index.html'; // Redirecionar para a página inicial
+          })
+          .catch(error => console.error('Erro ao criar o novo jogador:', error));
+        }
+      })
+      .catch(error => console.error('Erro ao buscar jogadores:', error));
   }
 };
 

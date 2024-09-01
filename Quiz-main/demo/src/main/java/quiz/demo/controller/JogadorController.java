@@ -57,10 +57,10 @@ public class JogadorController {
     }
 
     @GetMapping("/pontuacao-acima")
-    public List<Object[]> getJogadoresComPontuacaoAcima(@RequestParam double pontuacao) {
-        return jogadorService.findJogadoresComPontuacaoAcima(pontuacao);
+    public ResponseEntity<List<Object[]>> getJogadoresAcimaDaMedia() {
+        List<Object[]> jogadores = jogadorService.getJogadoresAcimaDaMedia();
+        return ResponseEntity.ok(jogadores);
     }
-
     @GetMapping("/contagem-perguntas")
     public List<Object[]> getContagemPerguntasPorCategoria() {
         return jogadorService.findContagemPerguntasPorCategoria();
@@ -106,7 +106,8 @@ public List<Object[]> getPontuacaoMaximaEMinimaPorQuiz() {
     return jogadorService.findPontuacaoMaximaEMinimaPorQuiz();
 }
 
-  
+
+
 
 
 }

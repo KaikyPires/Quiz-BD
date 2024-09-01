@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import quiz.demo.model.Jogador;
+import quiz.demo.model.Quiz;
 import quiz.demo.model.QuizJogado;
+import quiz.demo.service.JogadorService;
 import quiz.demo.service.QuizJogadoService;
 
 @RestController
@@ -53,4 +57,6 @@ public class QuizJogadoController {
         quizJogadoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    
+    
 }

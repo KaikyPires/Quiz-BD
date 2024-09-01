@@ -29,10 +29,10 @@ public class JogadorService {
         jogadorRepository.deleteById(id);
     }
 
-    public List<Object[]> findJogadoresComPontuacaoAcima(double pontuacao) {
-        return jogadorRepository.findJogadoresComPontuacaoAcima(pontuacao);
+    
+    public List<Object[]> getJogadoresAcimaDaMedia() {
+        return jogadorRepository.findJogadoresAcimaDaMedia();
     }
-
     public List<Object[]> findContagemPerguntasPorCategoria() {
         return jogadorRepository.findContagemPerguntasPorCategoria();
     }
@@ -67,5 +67,7 @@ public class JogadorService {
     public List<Object[]> findPontuacaoMaximaEMinimaPorQuiz() {
         return jogadorRepository.findPontuacaoMaximaEMinimaPorQuiz();
     }
+ 
     
+
 }
