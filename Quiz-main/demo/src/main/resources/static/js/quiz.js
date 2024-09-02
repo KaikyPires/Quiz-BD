@@ -5,11 +5,12 @@ const textFinish = document.querySelector(".finish span");
 const content = document.querySelector(".content");
 const contentFinish = document.querySelector(".finish");
 const btnRestart = document.querySelector(".btn-restart");
-const btnSave = document.querySelector(".btn-save"); // Novo botão para salvar pontuação
+const btnSave = document.querySelector(".btn-save");
 
 let currentIndex = 0;
 let questionsCorrect = 0;
 let questions = []; // Inicialmente vazio, será preenchido com dados do banco
+let quizDetails = {}; // Armazenar detalhes do quiz atual
 
 btnRestart.onclick = () => {
   content.style.display = "flex";
@@ -42,12 +43,39 @@ btnSave.onclick = () => {
               pontuacaoTotal: updatedScore
             })
           })
-          .then(response => response.json())
-          .then(updatedJogador => {
-            console.log('Pontuação atualizada com sucesso:', updatedJogador);
-            window.location.href = 'index.html'; // Redirecionar para a página inicial
-          })
-          .catch(error => console.error('Erro ao atualizar a pontuação:', error));
+            .then(response => response.json())
+            .then(updatedJogador => {
+              console.log('Pontuação atualizada com sucesso:', updatedJogador);
+
+              // Adicionar dados ao banco de quiz-jogados
+              fetch('http://localhost:8080/api/quiz-jogados', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  jogador: {
+                    id: updatedJogador.id,
+                    nome: updatedJogador.nome,
+                    pontuacaoTotal: updatedScore
+                  },
+                  quiz: {
+                    id: quizDetails.id,
+                    nome: quizDetails.nome,
+                    descricao: quizDetails.descricao
+                  },
+                  data: new Date().toISOString().split('T')[0], // Data no formato yyyy-mm-dd
+                  pontuacao: questionsCorrect
+                })
+              })
+                .then(response => response.json())
+                .then(() => {
+                  console.log('Dados do quiz-jogado adicionados com sucesso');
+                  window.location.href = 'index.html'; // Redirecionar para a página inicial
+                })
+                .catch(error => console.error('Erro ao adicionar dados do quiz-jogado:', error));
+            })
+            .catch(error => console.error('Erro ao atualizar a pontuação:', error));
         } else {
           // Criar um novo jogador com a pontuação
           fetch('http://localhost:8080/api/jogadores', {
@@ -60,12 +88,39 @@ btnSave.onclick = () => {
               pontuacaoTotal: questionsCorrect
             })
           })
-          .then(response => response.json())
-          .then(newJogador => {
-            console.log('Novo jogador criado com sucesso:', newJogador);
-            window.location.href = 'index.html'; // Redirecionar para a página inicial
-          })
-          .catch(error => console.error('Erro ao criar o novo jogador:', error));
+            .then(response => response.json())
+            .then(newJogador => {
+              console.log('Novo jogador criado com sucesso:', newJogador);
+
+              // Adicionar dados ao banco de quiz-jogados
+              fetch('http://localhost:8080/api/quiz-jogados', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  jogador: {
+                    id: newJogador.id,
+                    nome: newJogador.nome,
+                    pontuacaoTotal: newJogador.pontuacaoTotal
+                  },
+                  quiz: {
+                    id: quizDetails.id,
+                    nome: quizDetails.nome,
+                    descricao: quizDetails.descricao
+                  },
+                  data: new Date().toISOString().split('T')[0], // Data no formato yyyy-mm-dd
+                  pontuacao: questionsCorrect
+                })
+              })
+                .then(response => response.json())
+                .then(() => {
+                  console.log('Dados do quiz-jogado adicionados com sucesso');
+                  window.location.href = 'index.html'; // Redirecionar para a página inicial
+                })
+                .catch(error => console.error('Erro ao adicionar dados do quiz-jogado:', error));
+            })
+            .catch(error => console.error('Erro ao criar o novo jogador:', error));
         }
       })
       .catch(error => console.error('Erro ao buscar jogadores:', error));
@@ -145,40 +200,85 @@ function fetchQuestionsAndAnswers() {
     fetch('http://localhost:8080/api/perguntas').then(response => response.json()),
     fetch('http://localhost:8080/api/respostas').then(response => response.json())
   ])
-  .then(([perguntas, respostas]) => {
-    console.log('Perguntas:', perguntas);
-    console.log('Respostas:', respostas);
+    .then(([perguntas, respostas]) => {
+      console.log('Perguntas:', perguntas);
+      console.log('Respostas:', respostas);
 
-    const perguntasFiltradas = perguntas.filter(pergunta => pergunta && pergunta.categoria === categoriaQuiz);
-    console.log('Perguntas Filtradas:', perguntasFiltradas);
+      const perguntasFiltradas = perguntas.filter(pergunta => pergunta && pergunta.categoria === categoriaQuiz);
+      console.log('Perguntas Filtradas:', perguntasFiltradas);
 
-    // Seleciona aleatoriamente 10 perguntas, garantindo que sejam distintas
-    const perguntasSelecionadas = selectRandomQuestions(perguntasFiltradas, 10);
-    console.log('Perguntas Selecionadas:', perguntasSelecionadas);
+      // Seleciona aleatoriamente 10 perguntas, garantindo que sejam distintas
+      const perguntasSelecionadas = selectRandomQuestions(perguntasFiltradas, 10);
+      console.log('Perguntas Selecionadas:', perguntasSelecionadas);
 
-    questions = perguntasSelecionadas.map(pergunta => {
-      if (!pergunta || !pergunta.id) {
-        console.error('Pergunta inválida:', pergunta);
-        return { question: '', answers: [] };
-      }
+      questions = perguntasSelecionadas.map(pergunta => {
+        if (!pergunta || !pergunta.id) {
+          console.error('Pergunta inválida:', pergunta);
+          return { question: '', answers: [] };
+        }
 
-      const respostasFiltradas = respostas.filter(resposta => resposta.pergunta && resposta.pergunta.id === pergunta.id);
-      return {
-        question: pergunta.texto,
-        answers: respostasFiltradas.map(resposta => ({
-          option: resposta.texto,
-          correct: resposta.correta
-        }))
-      };
-    });
+        const respostasFiltradas = respostas.filter(resposta => resposta.pergunta && resposta.pergunta.id === pergunta.id);
+        return {
+          question: pergunta.texto,
+          answers: respostasFiltradas.map(resposta => ({
+            option: resposta.texto,
+            correct: resposta.correta
+          }))
+        };
+      });
 
-    loadQuestion();
-  })
-  .catch(error => console.error('Erro ao carregar o quiz:', error));
+      // Atualizar detalhes do quiz
+      quizDetails.id = getQuizId();
+      quizDetails.nome = getQuizName();
+      quizDetails.descricao = getQuizDescription();
+
+      loadQuestion();
+    })
+    .catch(error => console.error('Erro ao carregar o quiz:', error));
 }
 
 document.addEventListener('DOMContentLoaded', fetchQuestionsAndAnswers);
 
-document.getElementById('voltar').addEventListener('click', function() {
-  window.location.href = 'index.html';
+document.getElementById('voltar').addEventListener('click', function () {
+  window.location.href = 'escolha.html';
 });
+
+// Funções para obter informações do quiz
+function getQuizId() {
+  // Aqui você deve retornar o ID do quiz atual
+  // Exemplo fixo, adapte conforme necessário
+  if (window.location.pathname.includes('sql.html')) {
+    return 1;
+  } else if (window.location.pathname.includes('games.html')) {
+    return 3;
+  } else if (window.location.pathname.includes('programacao.html')) {
+    return 2;
+  }
+  return null;
+}
+
+function getQuizName() {
+  // Aqui você deve retornar o nome do quiz atual
+  // Exemplo fixo, adapte conforme necessário
+  if (window.location.pathname.includes('sql.html')) {
+    return 'SQL Quiz';
+  } else if (window.location.pathname.includes('games.html')) {
+    return 'Games Quiz';
+  } else if (window.location.pathname.includes('programacao.html')) {
+    return 'Programação Quiz';
+  }
+  return '';
+}
+
+function getQuizDescription() {
+  // Aqui você deve retornar a descrição do quiz atual
+  // Exemplo fixo, adapte conforme necessário
+  if (window.location.pathname.includes('sql.html')) {
+    return 'Teste seus conhecimentos em SQL.';
+  } else if (window.location.pathname.includes('games.html')) {
+    return 'Teste seus conhecimentos em Games.';
+  } else if (window.location.pathname.includes('programacao.html')) {
+    return 'Teste seus conhecimentos em Programação.';
+  }
+  return '';
+}
