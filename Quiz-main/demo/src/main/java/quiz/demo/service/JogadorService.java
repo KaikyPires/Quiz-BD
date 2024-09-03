@@ -67,7 +67,9 @@ public class JogadorService {
     public List<Object[]> findPontuacaoMaximaEMinimaPorQuiz() {
         return jogadorRepository.findPontuacaoMaximaEMinimaPorQuiz();
     }
- 
     
+    public List<Object[]> findTotalPontuacaoAndQuizCount() {
+        return jogadorRepository.findTotalPontuacaoAndQuizCount();
+    }
 
 }

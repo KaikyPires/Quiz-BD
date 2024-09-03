@@ -7,19 +7,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Press+Start+2P&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../static/images/arcade.png">
-    <title>Tabelas</title>
+    <title>Ranking</title>
     <link rel="stylesheet" href="../static/css/table.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Inclui FontAwesome -->
 
     <script src="../static/js/loading.js"></script>
     <style>
-        
         body {
             margin: 0;
             padding: 20px;
+            font-family: 'Roboto', sans-serif;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            padding: 20px;
         }
         select, button {
             margin: 10px 0;
@@ -30,17 +32,21 @@
             margin-bottom: 20px;
         }
         table {
-            width: 100%;
+            width: 100%; /* Ajusta a largura da tabela para ocupar 100% do container */
             border-collapse: collapse;
             margin-top: 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); 
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
             overflow: hidden;
             border-radius: 10px;
+            table-layout: fixed; /* Define um layout fixo para melhor controle da largura das colunas */
         }
         th, td {
             padding: 12px;
             text-align: left;
             color: #ffffff;
+            white-space: nowrap; /* Impede quebra de linha nas células */
+            overflow: hidden; /* Garante que o texto não ultrapasse os limites da célula */
+            text-overflow: ellipsis; /* Adiciona reticências se o texto for muito longo */
         }
         th {
             background-color: #F2BB13;
@@ -52,7 +58,38 @@
         tr:hover {
             background-color: #5A5A5A; /* Cor de fundo quando o mouse passa sobre a linha */
         }
-        /* Efeito de hover para células da tabela */
+        .centered-table {
+            margin: 0 auto; /* Centraliza a tabela horizontalmente */
+        }
+        .first {
+            background-color: #FFD700; /* Ouro */
+            font-weight: bold;
+        }
+        .second {
+            background-color: #C0C0C0; /* Prata */
+            font-weight: bold;
+        }
+        .third {
+            background-color: #cd7f32; /* Bronze */
+            font-weight: bold;
+        }
+        .fa-medal {
+            font-size: 1.5rem; /* Ajusta o tamanho do ícone */
+            vertical-align: middle; /* Alinha verticalmente com o texto */
+            margin-left: 8px; /* Espaçamento à esquerda do ícone */
+        }
+        .fa-crown {
+            font-size: 1.8rem; /* Ajusta o tamanho do ícone */
+            vertical-align: middle; /* Alinha verticalmente com o texto */
+            transform: translateY(-22%);/* Espaçamento à esquerda do ícone */
+        }
+        /* Estilo para a tabela quando a tela é pequena */
+        @media (max-width: 600px) {
+            table {
+                width: 100%;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -73,19 +110,14 @@
       </div>
       <div class="menu-bg" id="menu-bg"></div>
     <div class="container">
-        <h1>Consultas SQL</h1>
+        <h1><i class="fa-solid fa-crown"></i> Ranking <i class="fa-solid fa-crown"></i></h1> <!-- Adicionado o ícone aqui -->
         
         <select id="consultaSelect">
             <option value="">Selecione uma consulta</option>
-            <option value="pontuacao-acima">Jogadores com Pontuação Acima</option>
-            <option value="contagem-perguntas">Contagem de Perguntas por Categoria</option>
-            <option value="jogadores-quizzes">Jogadores e Quizzes</option>
-            <option value="perguntas-respostas">Perguntas e Respostas</option>
-            <option value="quizzes-perguntas-respostas-corr">Quizzes, Perguntas e Respostas Corretas</option>
-            <option value="total-quizzes-jogados">Total de Quizzes Jogados por Jogador</option>
-            <option value="pontuacao-media">Pontuação Média por Quiz</option>
-            <option value="datas-quiz">Datas do Primeiro e Último Quiz Jogados</option>
-            <option value="Listar jogador, quiz, data, pontuacao">Listar jogador, quiz, data, pontuacao</option>
+            <option value="total-pontuacao-quiz">Total de Pontuação e Contagem de Quizzes</option> <!-- Nova opção -->
+            <option value="Top-10 - SQL">Total de Pontuação em SQL</option> <!-- Nova opção -->
+            <option value="Top-10 - Programação">Total de Pontuação em Programação</option> <!-- Nova opção -->
+            <option value="Top-10 - Games">Total de Pontuação em Games</option> <!-- Nova opção -->
         </select>
         
         <button id="mostrarBtn" onclick="mostrarTabela()">Mostrar Tabela</button>
@@ -117,21 +149,38 @@
                         return;
                     }
 
-                    let tableHTML = '<table><caption>Resultados da Consulta</caption><thead><tr>';
+                    // Limita o número de resultados a 10
+                    const limitedData = data.slice(0, 10);
+
+                    let tableHTML = '<table class="centered-table"><caption>Resultados</caption><thead><tr>';
                     
                     // Adiciona cabeçalhos à tabela
-                    Object.keys(data[0]).forEach(key => {
+                    Object.keys(limitedData[0]).forEach(key => {
                         tableHTML += `<th>${key}</th>`;
                     });
-                    tableHTML += '</tr></thead><tbody>';
+                    tableHTML += '<th>Medalha</th></tr></thead><tbody>';
 
                     // Adiciona os dados à tabela
-                    data.forEach(row => {
-                        tableHTML += '<tr>';
+                    limitedData.forEach((row, index) => {
+                        let rowClass = '';
+                        let medalHTML = '';
+
+                        if (index === 0) {
+                            rowClass = 'first';
+                            medalHTML = '<i class="fa-solid fa-medal"></i>'; // Ouro
+                        } else if (index === 1) {
+                            rowClass = 'second';
+                            medalHTML = '<i class="fa-solid fa-medal"></i>'; // Prata
+                        } else if (index === 2) {
+                            rowClass = 'third';
+                            medalHTML = '<i class="fa-solid fa-medal"></i>'; // Bronze
+                        }
+
+                        tableHTML += `<tr class="${rowClass}">`;
                         Object.values(row).forEach(value => {
                             tableHTML += `<td>${value}</td>`;
                         });
-                        tableHTML += '</tr>';
+                        tableHTML += `<td>${medalHTML}</td></tr>`;
                     });
                     tableHTML += '</tbody></table>';
 

@@ -1,24 +1,29 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Press+Start+2P&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="icon" href="../static/images/arcade.png">
-    <title>Quiz - Resultado</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <link rel="icon" href="../static/images/arcade.png">
+  <title>Quiz</title>
+  <link rel="stylesheet" href="../static/css/loadingpage.css">
 </head>
 <body>
-    <h1>Resultado do Quiz</h1>
-    <div class="finish">
-        <span id="resultMessage"></span>
-        <label for="playerName">Digite seu nome:</label>
-        <input type="text" id="playerName" placeholder="Seu nome">
-        <button id="submitResults">Enviar Resultados</button>
-        <button onclick="window.location.href='escolha.html';">Voltar ao menu</button>
-    </div>
-    <script src="../static/js/script-results.js" type="module"></script>
+ <!-- partial:index.partial.html -->
+<section class="container">
+  <h1>
+   
+    <span class="title">QUIZ</span>
+  </h1>
+  
+  <a href="escolha.html" class="button">Iniciar</a>
+
+</section>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.7.0/jquery.lettering.min.js'>
+</script>  
+<script src="../static/js/loading.js"></script>
 </body>
 </html>

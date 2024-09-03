@@ -12,6 +12,12 @@ let questionsCorrect = 0;
 let questions = []; // Inicialmente vazio, será preenchido com dados do banco
 let quizDetails = {}; // Armazenar detalhes do quiz atual
 
+// Modal
+const modal = document.getElementById("nameModal");
+const closeBtn = document.querySelector(".close");
+const submitNameBtn = document.getElementById("submitName");
+const playerNameInput = document.getElementById("playerName");
+
 btnRestart.onclick = () => {
   content.style.display = "flex";
   contentFinish.style.display = "none";
@@ -21,8 +27,26 @@ btnRestart.onclick = () => {
   loadQuestion();
 };
 
+// Mostrar o modal quando o botão "Salvar Pontuação" for clicado
 btnSave.onclick = () => {
-  const nome = prompt("Digite seu nome:");
+  modal.style.display = "block";
+};
+
+// Fechar o modal quando clicar no 'x'
+closeBtn.onclick = () => {
+  modal.style.display = "none";
+};
+
+// Fechar o modal quando clicar fora da área do modal
+window.onclick = (event) => {
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
+
+// Enviar o nome do jogador
+submitNameBtn.onclick = () => {
+  const nome = playerNameInput.value.trim();
   if (nome) {
     fetch('http://localhost:8080/api/jogadores')
       .then(response => response.json())
@@ -64,14 +88,15 @@ btnSave.onclick = () => {
                     nome: quizDetails.nome,
                     descricao: quizDetails.descricao
                   },
-                  data: new Date().toISOString().split('T')[0], // Data no formato yyyy-mm-dd
+                  data: new Date().toISOString(), // Data e hora no formato ISO 8601
                   pontuacao: questionsCorrect
                 })
               })
                 .then(response => response.json())
                 .then(() => {
                   console.log('Dados do quiz-jogado adicionados com sucesso');
-                  window.location.href = 'index.html'; // Redirecionar para a página inicial
+                  modal.style.display = "none";
+                  window.location.href = 'escolha.html'; // Redirecionar para a página escolhas.html
                 })
                 .catch(error => console.error('Erro ao adicionar dados do quiz-jogado:', error));
             })
@@ -109,14 +134,15 @@ btnSave.onclick = () => {
                     nome: quizDetails.nome,
                     descricao: quizDetails.descricao
                   },
-                  data: new Date().toISOString().split('T')[0], // Data no formato yyyy-mm-dd
+                  data: new Date().toISOString(), // Data e hora no formato ISO 8601
                   pontuacao: questionsCorrect
                 })
               })
                 .then(response => response.json())
                 .then(() => {
                   console.log('Dados do quiz-jogado adicionados com sucesso');
-                  window.location.href = 'index.html'; // Redirecionar para a página inicial
+                  modal.style.display = "none";
+                  window.location.href = 'escolha.html'; // Redirecionar para a página escolhas.html
                 })
                 .catch(error => console.error('Erro ao adicionar dados do quiz-jogado:', error));
             })
@@ -124,6 +150,8 @@ btnSave.onclick = () => {
         }
       })
       .catch(error => console.error('Erro ao buscar jogadores:', error));
+  } else {
+    alert("Por favor, insira um nome válido.");
   }
 };
 
@@ -250,24 +278,24 @@ function getQuizId() {
   if (window.location.pathname.includes('sql.html')) {
     return 1;
   } else if (window.location.pathname.includes('games.html')) {
-    return 3;
-  } else if (window.location.pathname.includes('programacao.html')) {
     return 2;
+  } else if (window.location.pathname.includes('programacao.html')) {
+    return 3;
   }
-  return null;
+  return 0;
 }
 
 function getQuizName() {
   // Aqui você deve retornar o nome do quiz atual
   // Exemplo fixo, adapte conforme necessário
   if (window.location.pathname.includes('sql.html')) {
-    return 'SQL Quiz';
+    return 'Quiz de SQL';
   } else if (window.location.pathname.includes('games.html')) {
-    return 'Games Quiz';
+    return 'Quiz de Games';
   } else if (window.location.pathname.includes('programacao.html')) {
-    return 'Programação Quiz';
+    return 'Quiz de Programação';
   }
-  return '';
+  return 'Quiz';
 }
 
 function getQuizDescription() {
@@ -280,5 +308,5 @@ function getQuizDescription() {
   } else if (window.location.pathname.includes('programacao.html')) {
     return 'Teste seus conhecimentos em Programação.';
   }
-  return '';
+  return 'Descrição do Quiz';
 }
