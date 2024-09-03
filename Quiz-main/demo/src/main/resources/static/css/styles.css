@@ -382,3 +382,18 @@ button:hover {
   text-decoration: none;
   cursor: pointer;
 }
+
+@keyframes blink {
+  0%, 100% {
+      opacity: 1;
+  }
+  50% {
+      opacity: 0;
+  }
+}
+
+#blinking-heading {
+  animation: blink 1s infinite;
+ padding-bottom: 40px;
+ margin-top: -28px;
+}

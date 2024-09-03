@@ -278,9 +278,9 @@ function getQuizId() {
   if (window.location.pathname.includes('sql.html')) {
     return 1;
   } else if (window.location.pathname.includes('games.html')) {
-    return 2;
-  } else if (window.location.pathname.includes('programacao.html')) {
     return 3;
+  } else if (window.location.pathname.includes('programacao.html')) {
+    return 2;
   }
   return 0;
 }
