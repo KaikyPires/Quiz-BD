@@ -73,10 +73,3 @@ Este projeto é um aplicativo de quiz desenvolvido com **Spring** no backend e u
 
 ![Descrição da Imagem 3](https://github.com/user-attachments/assets/25d37a43-e2ef-44f9-bc76-57d39aa9e478)
 *Tela de ranking exibindo as pontuações dos jogadores.*
-
-## Licença![Captura de tela 2024-09-09 203915]()
-
-
-
-
-Este projeto está licenciado sob a [MIT License](LICENSE).
