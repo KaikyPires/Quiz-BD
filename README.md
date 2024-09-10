@@ -17,7 +17,6 @@ Este projeto é um aplicativo de quiz desenvolvido com **Spring** no backend e u
 - **Back-end**: Spring Boot, Java
 - **Front-end**: HTML, CSS, JavaScript
 - **Banco de Dados**: MySQL
-- **Outras Dependências**: FontAwesome para ícones, Axios para requisições HTTP
 
 ## Como Executar
 
